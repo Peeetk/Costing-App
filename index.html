@@ -1,31 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dish Costing App</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="background"></div>
 
-  <div class="card" id="pdfContent">
-    <h2>Dish Costing App</h2>
+<div class="card" id="contentToExport">
+  <h2>Dish Costing App</h2>
 
-    <input id="recipeName" class="input" placeholder="Recipe Name">
-    <input id="servings" class="input" type="number" placeholder="Number of Servings" value="1" min="1">
+  <input id="recipeName" class="input" placeholder="Recipe Name" />
+  <input id="servings" class="input" type="number" placeholder="Number of Servings" value="1" min="1" />
 
-    <h3>Ingredients</h3>
-    <div id="ingredientsList"></div>
-    <div id="costOutput"></div>
+  <h3>Ingredients</h3>
+  <div id="ingredientsList"></div>
 
-    <button class="button" onclick="addIngredient()">Add Ingredient</button>
-    <button class="button" onclick="calculateCost()">Calculate Cost</button>
-    <button class="button" onclick="saveRecipe()">Save Recipe</button>
-    <button class="button" onclick="exportToPDF()">Export to PDF</button>
-  </div>
+  <div id="costOutput"></div>
+</div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="script.js"></script>
+<div class="buttons">
+  <button class="button" onclick="addIngredient()">Add Ingredient</button>
+  <button class="button" onclick="calculateCost()">Calculate Cost</button>
+  <button class="button" onclick="saveRecipe()">Save Recipe</button>
+  <button class="button" onclick="exportToPDF()">Export to PDF</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="script.js"></script>
+
 </body>
 </html>
