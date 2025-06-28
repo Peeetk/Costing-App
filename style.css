@@ -59,3 +59,15 @@ button:hover {
     display: none;
   }
 }
+#ingredientsList > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+#ingredientsList input {
+  flex: 1 1 22%;
+  min-width: 70px;
+  padding: 8px;
+}
