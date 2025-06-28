@@ -1,0 +1,94 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dish Costing App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="background"></div>  <div class="card" id="pdfContent">
+    <h2>Dish Costing App</h2><input id="recipeName" class="input" placeholder="Recipe Name">
+<input id="servings" class="input" type="number" placeholder="Number of Servings" value="1" min="1">
+
+<h3>Ingredients</h3>
+<div id="ingredientsList"></div>
+<div id="costOutput"></div>
+
+<button class="button" onclick="addIngredient()">Add Ingredient</button>
+<button class="button" onclick="calculateCost()">Calculate Cost</button>
+<button class="button" onclick="saveRecipe()">Save Recipe</button>
+<button class="button" onclick="exportToPDF()">Export to PDF</button>
+
+  </div>  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>  <script>
+    function addIngredient() {
+      const container = document.getElementById('ingredientsList');
+      const div = document.createElement('div');
+      div.innerHTML = `
+        <input class="input" placeholder="Ingredient">
+        <input class="input" type="number" placeholder="Quantity">
+        <input class="input" placeholder="Unit">
+        <input class="input" type="number" placeholder="Price">
+      `;
+      container.appendChild(div);
+    }
+
+    function calculateCost() {
+      const inputs = document.querySelectorAll('#ingredientsList > div');
+      let total = 0;
+      inputs.forEach(div => {
+        const price = parseFloat(div.children[3].value) || 0;
+        total += price;
+      });
+      const servings = parseFloat(document.getElementById('servings').value) || 1;
+      document.getElementById('costOutput').innerText = `Total Cost: $${total.toFixed(2)} | Per Person: $${(total / servings).toFixed(2)}`;
+    }
+
+    function saveRecipe() {
+      const name = document.getElementById('recipeName').value;
+      const servings = document.getElementById('servings').value;
+      const ingredients = [];
+      document.querySelectorAll('#ingredientsList > div').forEach(div => {
+        ingredients.push({
+          ingredient: div.children[0].value,
+          quantity: div.children[1].value,
+          unit: div.children[2].value,
+          price: div.children[3].value
+        });
+      });
+      const recipe = { name, servings, ingredients };
+      localStorage.setItem(name, JSON.stringify(recipe));
+      alert('Recipe Saved');
+    }
+
+    function exportToPDF() {
+      const element = document.getElementById('pdfContent');
+      const opt = {
+        margin: 10,
+        filename: 'dish-costing.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      };
+      html2pdf().set(opt).from(element).save();
+    }
+  </script></body>
+</html>/* style.css */
+
+{ box-sizing: border-box; }
+
+
+body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
+
+.card { background: white; padding: 20px; border-radius: 8px; width: 100%; max-width: 400px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+.input { width: 100%; padding: 10px; margin-bottom: 10px; font-size: 16px; }
+
+button { width: 100%; padding: 12px; margin: 5px 0; border: none; border-radius: 4px; background-color: #007BFF; color: white; font-weight: bold; cursor: pointer; }
+
+button:hover { background-color: #0056b3; }
+
+@media (max-width: 600px) { .card { padding: 15px; } .input, button { font-size: 16px; } }
+
+@media print { .button { display: none; } }
+
