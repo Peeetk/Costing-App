@@ -1,35 +1,59 @@
 function addIngredient() {
-  const container = document.getElementById('ingredientsList');
-  const div = document.createElement('div');
+  const div = document.createElement("div");
   div.innerHTML = `
     <input class="input" placeholder="Ingredient">
     <input class="input" type="number" placeholder="Quantity">
     <input class="input" placeholder="Unit">
     <input class="input" type="number" placeholder="Price">
   `;
-  container.appendChild(div);
+  document.getElementById("ingredientsList").appendChild(div);
 }
 
 function calculateCost() {
-  const inputs = document.querySelectorAll('#ingredientsList > div');
+  const quantities = document.querySelectorAll("#ingredientsList input:nth-child(2)");
+  const prices = document.querySelectorAll("#ingredientsList input:nth-child(4)");
+  const servings = parseFloat(document.getElementById("servings").value) || 1;
+
   let total = 0;
-  inputs.forEach(div => {
-    const price = parseFloat(div.children[3].value) || 0;
-    total += price;
+  for (let i = 0; i < quantities.length; i++) {
+    const qty = parseFloat(quantities[i].value) || 0;
+    const price = parseFloat(prices[i].value) || 0;
+    total += price * qty;
+  }
+
+  const perPerson = total / servings;
+  document.getElementById("costOutput").innerHTML = `
+    <p>Total Cost: $${total.toFixed(2)}</p>
+    <p>Cost Per Serving: $${perPerson.toFixed(2)}</p>
+  `;
+}
+
+function saveRecipe() {
+  const name = document.getElementById("recipeName").value;
+  const servings = document.getElementById("servings").value;
+  const ingredients = Array.from(document.querySelectorAll("#ingredientsList > div")).map(div => {
+    const inputs = div.querySelectorAll("input");
+    return {
+      name: inputs[0].value,
+      quantity: inputs[1].value,
+      unit: inputs[2].value,
+      price: inputs[3].value
+    };
   });
-  const servings = parseFloat(document.getElementById('servings').value) || 1;
-  document.getElementById('costOutput').innerText =
-    `Total Cost: $${total.toFixed(2)} | Per Person: $${(total / servings).toFixed(2)}`;
+
+  const recipe = { name, servings, ingredients };
+  localStorage.setItem(name, JSON.stringify(recipe));
+  alert("Recipe saved to local storage!");
 }
 
 function exportToPDF() {
-  const element = document.body; // Capture the entire page
+  const element = document.getElementById("contentToExport");
 
   const opt = {
-    margin: 0,
+    margin: 10,
     filename: 'dish-costing.pdf',
     image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, windowWidth: document.body.scrollWidth, windowHeight: document.body.scrollHeight },
+    html2canvas: { scale: 2, useCORS: true },
     jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' },
     pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
   };
